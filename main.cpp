@@ -241,9 +241,7 @@ struct Solver {
                     latest[idx].emplace_back(ele);
                     if( (idx == 0 && delta == -1) || (idx == d-1 && delta == 1) ) delta *= -1;
                     else idx += delta;
-                    cerr << ele << " ";
                 }
-                cerr << endl;
             }
         }
         else {
@@ -267,7 +265,10 @@ struct Solver {
         // 2. group間の関係を調整 (2点 swap or 1点移動)
         while( state.q && utility::mytm.elapsed() <= TIME_LIMIT ) {
             g1 = g_rank[0], g2 = g_rank.back();
-            if( state.cnt >= latest[g1].size()*latest[g2].size() && d > 2 ) ( rand_int()%2 ? g1 : g2 ) = g_rank[rand_int()%(d-2)+1];
+            if( state.cnt >= latest[g1].size()*latest[g2].size() && d > 2 ) {
+                if( latest[g1].size() == 1 ) while( latest[g1].size() == 1 ) g1 = g_rank[rand_int()%(d-2)+1];
+                else ( rand_int()%2 ? g1 : g2 ) = g_rank[rand_int()%(d-2)+1];
+            }
             
             query = rand_int()%10;
             if( query ) state.smoothing(g1, g2, relation_one, relation_group, res, latest, g_rank);
